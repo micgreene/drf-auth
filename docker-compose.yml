@@ -3,7 +3,9 @@ version: '3'
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    #old build command for local server
+    # command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn drf_auth_project.wsgi:application --bind 0.0.0.0:8000 --workers 4
     volumes:
       - .:/code
     ports:
@@ -12,8 +14,11 @@ services:
       - db
   db:
     image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-
+volumes:
+    postgres_data:
